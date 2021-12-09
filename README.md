@@ -1,1 +1,3 @@
-Deepsky-TempRH-cal
+## Deepsky-TempRH-cal
+
+IoT thermo-hygrometers intercomparison
