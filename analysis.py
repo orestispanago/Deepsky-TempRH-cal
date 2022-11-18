@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-def scatter_matrix_lower(df):
+def scatter_matrix_lower(df, title='Air Temperature (°C)'):
     """ Plots lower triangle of scatter matrix """
 
     def corrfunc(x, y, **kwargs):
@@ -32,7 +32,7 @@ def scatter_matrix_lower(df):
     grid = grid.map_lower(plt.scatter, s=0.2)
     grid.map_lower(corrfunc)
     grid.set(alpha=1)
-    grid.fig.suptitle('Air Temperature (°C)')
+    grid.fig.suptitle(title)
     
     
 plt.rcParams["axes.labelsize"] = 14
@@ -47,16 +47,23 @@ for csv_file in csv_files:
     # df = df.resample('1min').mean()
     df = df[df['Tmean']<45]
     df = df[df['Tstdev']<0.4]
-    df['Tmean'].plot(title=csv_file)
-    plt.show()
-    # df['Tstdev'].plot(title=csv_file)
+    df = df[df['RHstdev']<4]
+    # df['RHstdev'].plot(title=csv_file)
     # plt.show()
+    df['RHmean'].plot(title=csv_file)
+    plt.show()
     df_list.append(df)
 
 df_all = pd.concat(df_list)
 # df_all = df_all.resample('1min').mean()
 
-pivoted = df_all.pivot(columns='stationID', values='Tmean')
+# pivoted = df_all.pivot(columns='stationID', values='Tmean')
+# pivoted = pivoted.resample('1min').mean().dropna()
+
+# scatter_matrix_lower(pivoted)
+
+
+pivoted = df_all.pivot(columns='stationID', values='RHmean')
 pivoted = pivoted.resample('1min').mean().dropna()
 
-scatter_matrix_lower(pivoted)
+scatter_matrix_lower(pivoted, title="RH (%)")
